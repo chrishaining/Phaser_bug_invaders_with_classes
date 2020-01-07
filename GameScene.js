@@ -83,7 +83,6 @@ class GameScene extends Phaser.Scene {
             loop: true,
         })
         
-        
         this.physics.add.collider(pellets, platforms, (pellet) => {pellet.destroy()})
       
         this.physics.add.collider(pellets, gameState.player, () => {
@@ -99,7 +98,6 @@ class GameScene extends Phaser.Scene {
           })
       
         gameState.bugRepellent = this.physics.add.group();
-      
       
         this.physics.add.collider(gameState.enemies, gameState.bugRepellent, (bug, repellent) => {
           bug.destroy();
@@ -131,7 +129,15 @@ class GameScene extends Phaser.Scene {
             else {
                 gameState.player.setVelocityX(0);
             }
-      
+
+            // pause
+            if (gameState.cursors.down.isDown) {
+              if (this.scene.isPaused('GameScene') === false) {
+                this.scene.pause('GameScene')}
+              else if (this.scene.isPaused('GameScene') === true) {
+                this.scene.resume('GameScene')}
+            }
+           
               // Execute code if the spacebar key is pressed
             if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
                 gameState.bugRepellent.create(gameState.player.x, gameState.player.y, 'bugRepellent').setGravityY(-400)
