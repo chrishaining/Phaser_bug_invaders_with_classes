@@ -1,9 +1,24 @@
-const gameState = {enemyVelocity: 1}; 
+ // I'm not sure where I should define the gameState variable
+const gameState = {enemyVelocity: 1};
+
+// Helper Methods below:
+//   Do they need the word function? I thought yes, but I get an error message if I put them in
+// sortedEnemies() returns an array of enemy sprites sorted by their x coordinate
+function sortedEnemies() {
+    const orderedByXCoord = gameState.enemies.getChildren().sort((a, b) => a.x - b.x);
+    return orderedByXCoord;
+}
+      // numOfTotalEnemies() returns the number of total enemies 
+function numOfTotalEnemies() {
+    const totalEnemies = gameState.enemies.getChildren().length;
+    return totalEnemies;
+}
 
 class GameScene extends Phaser.Scene {
     constructor() {
         super({key: 'GameScene'})
     }
+    
 
     preload() {
         this.load.image('bug1', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Bug+Invaders/bug_1.png');
@@ -15,17 +30,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('bugRepellent', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Bug+Invaders/bugRepellent.png');
     }
       
-      // Helper Methods below:
-      // sortedEnemies() returns an array of enemy sprites sorted by their x coordinate
-    function sortedEnemies(){
-        const orderedByXCoord = gameState.enemies.getChildren().sort((a, b) => a.x - b.x);
-        return orderedByXCoord;
-    }
-      // numOfTotalEnemies() returns the number of total enemies 
-    function numOfTotalEnemies() {
-          const totalEnemies = gameState.enemies.getChildren().length;
-        return totalEnemies;
-    }
+  
       
     create() {
           // When gameState.active is true, the game is being played and not over. When gameState.active is false, then it's game over
@@ -40,10 +45,10 @@ class GameScene extends Phaser.Scene {
       
           // Creating static platforms
         const platforms = this.physics.add.staticGroup();
-        platforms.create(225, 490, 'platform').setScale(1, .3).refreshBody();
+        platforms.create(225, 490, 'platform').setScale(3, 0.3).refreshBody();
       
           // Displays the initial number of bugs, this value is initially hardcoded as 24 
-        gameState.scoreText = this.add.text(175, 482, 'Bugs Left: 24', { fontSize: '15px', fill: '#000000' });
+        gameState.scoreText = this.add.text(175, 482, 'Bugs Left: 24', { fontSize: '15px', fill: '#ffffff' });
       
           // Uses the physics plugin to create Codey
         gameState.player = this.physics.add.sprite(225, 450, 'codey').setScale(.5);
@@ -83,7 +88,7 @@ class GameScene extends Phaser.Scene {
               gameState.enemyVelocity = 1;
               gameState.pelletsLoop.destroy();
               this.physics.pause();
-              this.add.text(200, 200, 'Game Over', {fontSize: '30px', fill: '#000000'})
+              this.add.text(200, 200, 'Game Over', {fontSize: '30px', fill: '#ffffff'})
           })
       
         gameState.bugRepellent = this.physics.add.group();
@@ -99,7 +104,7 @@ class GameScene extends Phaser.Scene {
           gameState.active = false;
           gameState.enemyVelocity = 1;
           this.physics.pause();
-          this.add.text(200, 200, 'Game Over', {fontSize: '30px', fill: '#000000'})
+          this.add.text(200, 200, 'Game Over', {fontSize: '30px', fill: '#ffffff'})
         })
     }
       
@@ -126,7 +131,7 @@ class GameScene extends Phaser.Scene {
                 gameState.active = false;
                 this.physics.pause();
                 gameState.enemyVelocity = 1;
-                this.add.text(200, 200, 'You won!', {fontSize: '30px', fill: '#000000'});
+                this.add.text(200, 200, 'You won!', {fontSize: '30px', fill: '#ffffff'});
             }
             else {
                 gameState.enemies.getChildren().forEach(function(bug) {bug.x += gameState.enemyVelocity});
