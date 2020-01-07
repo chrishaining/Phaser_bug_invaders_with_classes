@@ -69,9 +69,11 @@ class GameScene extends Phaser.Scene {
         }
         const pellets = this.physics.add.group();
         const genPellet = () => {
-              let randomBug = Phaser.Utils.Array.GetRandom(gameState.enemies.getChildren());
-              pellets.create(randomBug.x, randomBug.y, 'bugPellet')
-          }
+            if (numOfTotalEnemies() > 0) {
+            let randomBug = Phaser.Utils.Array.GetRandom(gameState.enemies.getChildren());
+             pellets.create(randomBug.x, randomBug.y, 'bugPellet')
+            }
+        }
         
         gameState.pelletsLoop = this.time.addEvent(
             {
@@ -81,6 +83,7 @@ class GameScene extends Phaser.Scene {
             loop: true,
         })
         
+        
         this.physics.add.collider(pellets, platforms, (pellet) => {pellet.destroy()})
       
         this.physics.add.collider(pellets, gameState.player, () => {
@@ -88,7 +91,11 @@ class GameScene extends Phaser.Scene {
               gameState.enemyVelocity = 1;
               gameState.pelletsLoop.destroy();
               this.physics.pause();
-              this.add.text(200, 200, 'Game Over', {fontSize: '30px', fill: '#ffffff'})
+            //   this.add.text(200, 200, 'Game Over', {fontSize: '30px', fill: '#ffffff'})
+              this.input.on('pointerdown', () => {
+                this.scene.stop('GameScene');
+                this.scene.start('EndScene');
+                })
           })
       
         gameState.bugRepellent = this.physics.add.group();
@@ -104,7 +111,11 @@ class GameScene extends Phaser.Scene {
           gameState.active = false;
           gameState.enemyVelocity = 1;
           this.physics.pause();
-          this.add.text(200, 200, 'Game Over', {fontSize: '30px', fill: '#ffffff'})
+        //   this.add.text(200, 200, 'Game Over', {fontSize: '30px', fill: '#ffffff'})
+          this.input.on('pointerdown', () => {
+            this.scene.stop('GameScene');
+            this.scene.start('EndScene');
+            })
         })
     }
       
@@ -131,7 +142,11 @@ class GameScene extends Phaser.Scene {
                 gameState.active = false;
                 this.physics.pause();
                 gameState.enemyVelocity = 1;
-                this.add.text(200, 200, 'You won!', {fontSize: '30px', fill: '#ffffff'});
+                // this.add.text(200, 200, 'You won!', {fontSize: '30px', fill: '#ffffff'});
+                this.input.on('pointerdown', () => {
+                    this.scene.stop('GameScene');
+                    this.scene.start('EndScene');
+                    })
             }
             else {
                 gameState.enemies.getChildren().forEach(function(bug) {bug.x += gameState.enemyVelocity});
@@ -146,12 +161,12 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    endGame() {
-        this.physics.pause();
-        this.input.on('pointerdown', () => {
-            this.scene.stop('GameScene');
-            this.scene.start('EndScene')
-            })
-    }
+    // endGame() {
+    //     this.physics.pause();
+    //     this.input.on('pointerdown', () => {
+    //         this.scene.stop('GameScene');
+    //         this.scene.start('EndScene')
+    //         })
+    // }
       
 }
