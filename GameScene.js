@@ -1,6 +1,5 @@
 const gameState = {enemyVelocity: 1}; 
 
-
 class GameScene extends Phaser.Scene {
     constructor() {
         super({key: 'GameScene'})
@@ -30,39 +29,39 @@ class GameScene extends Phaser.Scene {
       
     create() {
           // When gameState.active is true, the game is being played and not over. When gameState.active is false, then it's game over
-          gameState.active = true;
+        gameState.active = true;
       
           // When gameState.active is false, the game will listen for a pointerup event and restart when the event happens
-          this.input.on('pointerup', () => {
-              if (gameState.active === false) {
-                  this.scene.restart();
-              }
-          })
+        this.input.on('pointerup', () => {
+            if (gameState.active === false) {
+                this.scene.restart();
+            }
+        })
       
           // Creating static platforms
-          const platforms = this.physics.add.staticGroup();
-          platforms.create(225, 490, 'platform').setScale(1, .3).refreshBody();
+        const platforms = this.physics.add.staticGroup();
+        platforms.create(225, 490, 'platform').setScale(1, .3).refreshBody();
       
           // Displays the initial number of bugs, this value is initially hardcoded as 24 
-          gameState.scoreText = this.add.text(175, 482, 'Bugs Left: 24', { fontSize: '15px', fill: '#000000' });
+        gameState.scoreText = this.add.text(175, 482, 'Bugs Left: 24', { fontSize: '15px', fill: '#000000' });
       
           // Uses the physics plugin to create Codey
-          gameState.player = this.physics.add.sprite(225, 450, 'codey').setScale(.5);
+        gameState.player = this.physics.add.sprite(225, 450, 'codey').setScale(.5);
       
           // Create Collider objects
-          gameState.player.setCollideWorldBounds(true);
-          this.physics.add.collider(gameState.player, platforms);
+        gameState.player.setCollideWorldBounds(true);
+        this.physics.add.collider(gameState.player, platforms);
           
           // Creates cursor objects to be used in update()
-          gameState.cursors = this.input.keyboard.createCursorKeys();
+        gameState.cursors = this.input.keyboard.createCursorKeys();
       
           // Add new code below:
-          gameState.enemies = this.physics.add.group();
-         for (let yVal = 1; yVal < 4; yVal++) {
-              for (let xVal = 1; xVal < 9; xVal++) {
+        gameState.enemies = this.physics.add.group();
+        for (let yVal = 1; yVal < 4; yVal++) {
+            for (let xVal = 1; xVal < 9; xVal++) {
               gameState.enemies.create(50*xVal, 50*yVal, 'bug1').setScale(.6).setGravityY(-200)
-              }
-          }
+            }
+        }
         const pellets = this.physics.add.group();
         const genPellet = () => {
               let randomBug = Phaser.Utils.Array.GetRandom(gameState.enemies.getChildren());
@@ -70,14 +69,14 @@ class GameScene extends Phaser.Scene {
           }
         
         gameState.pelletsLoop = this.time.addEvent(
-        {
-        delay: 300,
-        callback: genPellet,
-        callbackScope: this,
-        loop: true,
-      })
+            {
+            delay: 300,
+            callback: genPellet,
+            callbackScope: this,
+            loop: true,
+        })
         
-            this.physics.add.collider(pellets, platforms, (pellet) => {pellet.destroy()})
+        this.physics.add.collider(pellets, platforms, (pellet) => {pellet.destroy()})
       
         this.physics.add.collider(pellets, gameState.player, () => {
               gameState.active = false;
@@ -102,45 +101,48 @@ class GameScene extends Phaser.Scene {
           this.physics.pause();
           this.add.text(200, 200, 'Game Over', {fontSize: '30px', fill: '#000000'})
         })
-      }
+    }
       
     update() {
-          if (gameState.active) {
+        if (gameState.active) {
               // If the game is active, then players can control Codey
-              if (gameState.cursors.left.isDown) {
-                  gameState.player.setVelocityX(-160);
-              } else if (gameState.cursors.right.isDown) {
-                  gameState.player.setVelocityX(160);
-              } else {
-                  gameState.player.setVelocityX(0);
-              }
+            if (gameState.cursors.left.isDown) {
+                gameState.player.setVelocityX(-160);
+            } 
+            else if (gameState.cursors.right.isDown) {
+                gameState.player.setVelocityX(160);
+            } 
+            else {
+                gameState.player.setVelocityX(0);
+            }
       
               // Execute code if the spacebar key is pressed
-              if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
-                  gameState.bugRepellent.create(gameState.player.x, gameState.player.y, 'bugRepellent').setGravityY(-400)
-              }
+            if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
+                gameState.bugRepellent.create(gameState.player.x, gameState.player.y, 'bugRepellent').setGravityY(-400)
+            }
       
               // Add logic for winning condition and enemy movements below:
-          if (numOfTotalEnemies() === 0) {
-            gameState.active = false;
-            this.physics.pause();
-            gameState.enemyVelocity = 1;
-            this.add.text(200, 200, 'You won!', {fontSize: '30px', fill: '#000000'});
+            if (numOfTotalEnemies() === 0) {
+                gameState.active = false;
+                this.physics.pause();
+                gameState.enemyVelocity = 1;
+                this.add.text(200, 200, 'You won!', {fontSize: '30px', fill: '#000000'});
             }
-          else {
-            gameState.enemies.getChildren().forEach(function(bug) {bug.x += gameState.enemyVelocity});
-            gameState.leftMostBug = sortedEnemies()[0];
-            gameState.rightMostBug = sortedEnemies()[sortedEnemies().length -1];
-            if (gameState.leftMostBug.x < 10 || gameState.rightMostBug.x > 440) {
-            gameState.enemyVelocity *= -1;             
-            gameState.enemies.getChildren().forEach(function(bug) {bug.y += 10})
+            else {
+                gameState.enemies.getChildren().forEach(function(bug) {bug.x += gameState.enemyVelocity});
+                gameState.leftMostBug = sortedEnemies()[0];
+                gameState.rightMostBug = sortedEnemies()[sortedEnemies().length -1];
+            if (gameState.leftMostBug.x < 10 || gameState.rightMostBug.x > 440) 
+                {
+                gameState.enemyVelocity *= -1;             
+                gameState.enemies.getChildren().forEach(function(bug) {bug.y += 10})
               }
-               }
-          
+            }
         }
-      }
+    }
+
     endGame() {
-        this.add.text(375, 200, 'Here goes', {fill: '#ffffff', fontSize: '20px'});
+        this.physics.pause();
         this.input.on('pointerdown', () => {
             this.scene.stop('GameScene');
             this.scene.start('EndScene')
