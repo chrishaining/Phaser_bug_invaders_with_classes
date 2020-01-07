@@ -132,12 +132,16 @@ class GameScene extends Phaser.Scene {
 
             // pause
             if (gameState.cursors.down.isDown) {
-              if (this.scene.isPaused('GameScene') === false) {
+              // if (this.scene.isPaused('GameScene') === false) {
                 this.scene.pause('GameScene')}
-              else if (this.scene.isPaused('GameScene') === true) {
-                this.scene.resume('GameScene')}
-            }
-           
+            // }
+            
+            // unpause is not working
+            // if (gameState.cursors.up.isDown) {
+              // if (this.scene.isPaused('GameScene')) {
+                // this.scene.resume('GameScene')}
+            // }
+
               // Execute code if the spacebar key is pressed
             if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
                 gameState.bugRepellent.create(gameState.player.x, gameState.player.y, 'bugRepellent').setGravityY(-400)
